@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @program: smartpage-springboot
  * @description:
@@ -22,10 +25,8 @@ public class UserController {
     @Autowired
     UserService userService;
     @RequestMapping("login")
-    public String show(User user){
-        System.out.println("收到请求");
-        System.out.println(user.getUser_name()+" "+user.getUser_password());
-        System.out.println(userService.logincheck(user));
-        return "success";
+    public Map show(User user){
+        Map<String,String>  result=userService.logincheck(user);
+        return result;
     }
 }

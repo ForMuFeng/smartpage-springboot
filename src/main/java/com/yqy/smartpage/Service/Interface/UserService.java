@@ -2,6 +2,8 @@ package com.yqy.smartpage.Service.Interface;
 
 import com.yqy.smartpage.Entity.User;
 
+import java.util.HashMap;
+
 public interface UserService {
-    User logincheck(User user);
+    HashMap logincheck(User user);
 }

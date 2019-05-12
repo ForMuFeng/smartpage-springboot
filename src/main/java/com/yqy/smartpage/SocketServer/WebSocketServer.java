@@ -29,10 +29,11 @@ public class WebSocketServer {
     //与某个客户端会话的Session
     private Session session;
     //服务器状态记录线程
-    private Thread stateThread;
+     public static Thread stateThread;
     @OnOpen
     public void onOpen(Session session, @PathParam("sid")String sid) throws IOException {
         if(stateThread==null){
+            System.out.println("线程初始化");
             stateThread= new Thread(() -> {
                 try {
                     while(true){
@@ -46,6 +47,7 @@ public class WebSocketServer {
             });
         }
         if(!stateThread.isAlive()){
+            System.out.println("线程start");
             stateThread.start();
         }
         this.session=session;

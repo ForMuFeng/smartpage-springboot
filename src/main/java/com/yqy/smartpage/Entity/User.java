@@ -17,6 +17,18 @@ public class User implements Serializable {
     private String user_authority;
     private String user_mdf;//id的md5值
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "user_id=" + user_id +
+                ", user_name='" + user_name + '\'' +
+                ", user_password='" + user_password + '\'' +
+                ", user_authority='" + user_authority + '\'' +
+                ", user_mdf='" + user_mdf + '\'' +
+                '}';
+    }
+
+
     public int getUser_id() {
         return user_id;
     }

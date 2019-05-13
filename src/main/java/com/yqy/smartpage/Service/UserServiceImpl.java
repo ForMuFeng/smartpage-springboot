@@ -4,10 +4,12 @@ import com.yqy.smartpage.Entity.User;
 import com.yqy.smartpage.Mapper.UserMapper;
 import com.yqy.smartpage.Service.Interface.UserService;
 import com.yqy.smartpage.util.Utils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @program: smartpage-springboot
@@ -20,16 +22,22 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
 
-    public HashMap logincheck(User user){
+    public Map logincheck(User user){
+        Map<String,String> map=new HashMap<>();
         User check=userMapper.logincheck(user);
-        HashMap<String,String> result=new HashMap<>();
-        if(check!=null){
-            result.put("name",check.getUser_name());
-            result.put("authority",check.getUser_authority());
-            result.put("mdf", Utils.getMd5(String.valueOf(user.getUser_id())));
+        if(check==null){
+            map.put("message","fail");
         }else {
-            result.put("name",null);
+            String token= Utils.getToken(check);
+            map.put("message","success");
+            map.put("userid",String.valueOf(check.getUser_id()));
+            map.put("username",check.getUser_name());
+            map.put("admintoken",token);
         }
-        return result;
+        return map;
+    }
+
+    public User findUserById(String id){
+        return userMapper.findUserById(id);
     }
 }

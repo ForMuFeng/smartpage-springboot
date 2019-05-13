@@ -1,7 +1,6 @@
 package com.yqy.smartpage.SocketServer;
 
 import com.sun.management.OperatingSystemMXBean;
-
 import javax.websocket.Session;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -50,12 +49,13 @@ public class SystemState{
         return systemStates;
     }
 
-    public static void sendSystemStatment(ConcurrentMap<String,Session> users) throws IOException {
-        System.out.println("数量："+users.size());
+    //使方法同步否则可能出现重复发生session调用的情况
+    public static synchronized void sendSystemStatment(ConcurrentMap<String,Session> users) throws IOException {
+        String data=getMemInfo().toString();
+        String message="[{\"getNowNumber\":\""+users.size()+"\"},"+data+"]";
+        System.out.println(message);
         for (Map.Entry<String, Session> entry : users.entrySet()) {
-            String data=getMemInfo().toString();
-            System.out.println(data);
-            entry.getValue().getBasicRemote().sendText(data);
+            entry.getValue().getBasicRemote().sendText(message);
         }
     }
 

@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public interface UserMapper{
 
-    @Select("select user_name,user_id,user_authority from user where user_name=#{user_name} and user_password=#{user_password}")
+    @Select("select * from user where user_name=#{user_name} and user_password=#{user_password}")
     User logincheck(User user);
+
+    @Select("select * from user where user_id=#{user_id}")
+    User findUserById(String id);
 }

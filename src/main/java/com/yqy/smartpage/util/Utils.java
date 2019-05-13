@@ -1,5 +1,9 @@
 package com.yqy.smartpage.util;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.yqy.smartpage.Entity.User;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 
@@ -43,6 +47,17 @@ public class Utils {
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    /**
+     *  生成token的方法
+     */
+    public static  String getToken(User user) {
+        String token="";
+        token= JWT.create().withAudience(String.valueOf(user.getUser_id()))
+                .sign(Algorithm.HMAC256(user.getUser_name()));
+        return token;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.yqy.smartpage.SocketServer;
 
+import com.yqy.smartpage.Annotation.UserLoginToken;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -24,18 +25,20 @@ import java.util.concurrent.ConcurrentMap;
 public class WebSocketServer {
     //服务器在线人数
      private static int onlineCount=0;
-    //使用线程安全的set集合记录用户在线状态
+    //使用线程安全的Map集合记录用户在线状态
     public static ConcurrentMap<String,Session> users=new ConcurrentHashMap<>();
     //与某个客户端会话的Session
     private Session session;
     //服务器状态记录线程
      public static Thread stateThread;
+    @UserLoginToken
     @OnOpen
     public void onOpen(Session session, @PathParam("sid")String sid) throws IOException {
+        System.out.println("token:"+sid);
         if(stateThread==null){
-            System.out.println("线程初始化");
             stateThread= new Thread(() -> {
                 try {
+                    //
                     while(true){
                         SystemState.sendSystemStatment(users);
                         //每五秒进行一次服务器内存使用百分比上报
@@ -45,14 +48,13 @@ public class WebSocketServer {
                     e.printStackTrace();
                 }
             });
+
         }
         if(!stateThread.isAlive()){
-            System.out.println("线程start");
             stateThread.start();
         }
         this.session=session;
         users.put(sid,session);
-        sendUserCount();
         addUser();
     }
 
@@ -67,6 +69,11 @@ public class WebSocketServer {
     public void onError(Throwable error) {
         System.out.println("发生错误");
         error.printStackTrace();
+    }
+
+    @OnMessage
+    public void OnMessage(String message, Session session) throws IOException {
+        System.out.println(message);
     }
 
     //群发
@@ -85,6 +92,15 @@ public class WebSocketServer {
         }
     }
 
+    public static void slogout(String sid) throws IOException {
+        System.out.println("要下线的sid："+sid);
+        users.get(sid).close();
+        System.out.println("有一链接关闭，sid："+sid);
+        users.remove(sid);
+        removeUser();
+    }
+
+
 
 
 
@@ -93,8 +109,7 @@ public class WebSocketServer {
         onlineCount++;
     }
 
-    private synchronized void removeUser(){
-        System.out.println("用户下线："+session);
+    private  static  synchronized void removeUser(){
         onlineCount--;
     }
     private synchronized int getUserCount(){

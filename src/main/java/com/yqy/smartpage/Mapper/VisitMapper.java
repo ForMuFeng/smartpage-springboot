@@ -16,6 +16,7 @@ public interface VisitMapper {
     @Insert("insert into visit (visit_time,visit_user_id) values (#{visit_time},#{visit_user_id})")
     int getNewVisit(Visit visit);
 
+
     @Select("select count(visit_user_id) from visit ")
     int getAllPV();
 

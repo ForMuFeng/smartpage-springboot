@@ -37,8 +37,7 @@ public class UserController {
     UserService userService;
     @RequestMapping("login")
     public Map login(@RequestBody User user){
-        String time=new SimpleDateFormat("YYYY:MM:dd HH:mm:ss").format(new Date());
-        visitMapper.getNewVisit(new Visit(time,user.getUser_id()));
+
         Map map=userService.logincheck(user);
         return map;
     }
